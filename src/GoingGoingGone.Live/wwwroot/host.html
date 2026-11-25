@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Going, Going, Gone! Live · Projector</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔨</text></svg>">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<div class="host">
+  <header class="bar">
+    <span class="logo">Going, Going, <b>Gone!</b> Live</span>
+    <div class="stats" id="stats"></div>
+    <div class="ctl" id="ctl"></div>
+  </header>
+  <main class="stage" id="stage" aria-live="polite"><div class="center"><h2>Starting…</h2></div></main>
+  <footer class="players" id="players" aria-label="Players"></footer>
+</div>
+<script src="/lib/signalr.min.js"></script>
+<script src="/lib/qrcode.js"></script>
+<script src="/js/pixart.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/host.js"></script>
+</body>
+</html>

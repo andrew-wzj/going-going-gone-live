@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#bfe4dc">
+<title>Going, Going, Gone! Live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔨</text></svg>">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<div class="play">
+  <div class="offline hidden" id="offline">Reconnecting…</div>
+  <header class="top" id="top">
+    <span class="logo" style="font-size:1.05rem">Going, Going, <b>Gone!</b></span>
+  </header>
+  <main id="main">
+    <form class="card form" id="joinForm" autocomplete="off">
+      <h2>Join the auction</h2>
+      <label for="code">Room code</label>
+      <input id="code" class="code" maxlength="4" inputmode="text" autocapitalize="characters" required>
+      <label for="name">Your name</label>
+      <input id="name" maxlength="16" required placeholder="e.g. Mia">
+      <button class="btn primary" type="submit">Join</button>
+      <p class="err" id="joinErr" role="alert"></p>
+    </form>
+  </main>
+</div>
+<script src="/lib/signalr.min.js"></script>
+<script src="/js/pixart.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/play.js"></script>
+</body>
+</html>
