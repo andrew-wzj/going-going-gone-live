@@ -7,6 +7,9 @@ REGION=${2:-eastasia}
 RG=ggg-live-rg
 PLAN=ggg-live-plan
 cd "$(dirname "$0")"
+# Use the user-level install (~/.azcli) when az is not on PATH.
+az() { if command -v az >/dev/null 2>&1 && [ "$(type -t az)" = file ]; then command az "$@"; else PYTHONWARNINGS=ignore "$HOME/.azcli/bin/az" "$@"; fi; }
+export DOTNET_ROOT=${DOTNET_ROOT:-$HOME/.dotnet} PATH=$PATH:$HOME/.dotnet
 
 az group create -n "$RG" -l "$REGION" -o none
 az appservice plan create -g "$RG" -n "$PLAN" --is-linux --sku F1 -o none

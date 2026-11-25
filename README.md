@@ -29,6 +29,14 @@ On macOS, allow incoming connections if the firewall asks.
 
 **Auto call** makes the server call "Going, going…" by itself after 4 quiet seconds.
 
+## Put it online (Render, free)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/andrew-wzj/going-going-gone-live)
+
+`render.yaml` + `Dockerfile` describe the service. The free plan sleeps after 15 idle minutes,
+so open the projector page a minute before class. Rooms live in memory and reset when it sleeps.
+`deploy-azure.sh` does the same for Azure App Service (F1).
+
 ## Rules used
 
 - Everyone starts with $1.5B and 3 random artworks.

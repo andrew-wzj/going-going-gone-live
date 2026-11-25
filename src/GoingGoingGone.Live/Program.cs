@@ -5,10 +5,10 @@ using GoingGoingGone.Live.Hubs;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
-// Locally listen on every interface so phones on the same Wi-Fi can join.
-// In the cloud (Azure sets PORT / ASPNETCORE_URLS) keep the platform's binding.
-if (Environment.GetEnvironmentVariable("ASPNETCORE_URLS") is null && Environment.GetEnvironmentVariable("PORT") is null)
-    builder.WebHost.UseUrls("http://0.0.0.0:5080");
+// Hosts like Render pass the port in PORT; locally listen on 5080 on every interface
+// so phones on the same Wi-Fi can join. An explicit ASPNETCORE_URLS always wins.
+if (Environment.GetEnvironmentVariable("ASPNETCORE_URLS") is null)
+    builder.WebHost.UseUrls($"http://0.0.0.0:{Environment.GetEnvironmentVariable("PORT") ?? "5080"}");
 builder.Services.AddSignalR(o => o.MaximumReceiveMessageSize = 4 * 1024);
 builder.Services.AddSingleton<Catalog>();
 builder.Services.AddSingleton<RoomService>();

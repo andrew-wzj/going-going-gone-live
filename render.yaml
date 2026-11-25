@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: going-going-gone-live
+    runtime: docker
+    plan: free
+    region: singapore
+    healthCheckPath: /healthz
+    autoDeploy: true
