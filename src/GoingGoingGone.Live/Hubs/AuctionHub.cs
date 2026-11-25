@@ -8,7 +8,9 @@ public sealed class AuctionHub(RoomService rooms) : Hub
 {
     public async Task<object> CreateRoom()
     {
-        var room = rooms.Create();
+        var ip = Context.GetHttpContext()?.Connection.RemoteIpAddress?.ToString() ?? "?";
+        var room = rooms.TryCreate(ip);
+        if (room is null) return new { Error = "Too many rooms were opened from this network. Try again later." };
         await Groups.AddToGroupAsync(Context.ConnectionId, room.Code);
         await rooms.Broadcast(room);
         return new { room.Code, room.HostKey };
@@ -27,7 +29,9 @@ public sealed class AuctionHub(RoomService rooms) : Hub
     {
         var room = rooms.Get(code);
         if (room is null) return new { Error = "No room with that code. Check the code on the screen." };
-        name = (name ?? "").Trim();
+        // Strip control and invisible formatting characters; collapse whitespace.
+        name = string.Join(' ', new string((name ?? "").Where(c => !char.IsControl(c) && char.GetUnicodeCategory(c) != System.Globalization.UnicodeCategory.Format).ToArray())
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries));
         if (name.Length is < 1 or > 16) return new { Error = "Use a name of 1 to 16 characters." };
         Player p;
         lock (room.Gate)

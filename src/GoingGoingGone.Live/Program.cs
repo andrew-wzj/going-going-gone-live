@@ -2,19 +2,33 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using GoingGoingGone.Live.Game;
 using GoingGoingGone.Live.Hubs;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSignalR();
+// Locally listen on every interface so phones on the same Wi-Fi can join.
+// In the cloud (Azure sets PORT / ASPNETCORE_URLS) keep the platform's binding.
+if (Environment.GetEnvironmentVariable("ASPNETCORE_URLS") is null && Environment.GetEnvironmentVariable("PORT") is null)
+    builder.WebHost.UseUrls("http://0.0.0.0:5080");
+builder.Services.AddSignalR(o => o.MaximumReceiveMessageSize = 4 * 1024);
 builder.Services.AddSingleton<Catalog>();
 builder.Services.AddSingleton<RoomService>();
 builder.Services.AddHostedService<BotRunner>();
+builder.Services.Configure<ForwardedHeadersOptions>(o =>
+{
+    // Azure App Service terminates HTTPS in front of the app.
+    o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    o.KnownIPNetworks.Clear();
+    o.KnownProxies.Clear();
+});
 
 var app = builder.Build();
+app.UseForwardedHeaders();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.MapHub<AuctionHub>("/hub");
 app.MapGet("/api/artworks", (Catalog c) => c.All);
-// The address phones on the same Wi-Fi should open (shown as a QR code on the projector).
+app.MapGet("/healthz", () => "ok");
+// The address phones should open (shown as a QR code on the projector).
 app.MapGet("/api/info", (HttpContext ctx) =>
 {
     var host = ctx.Request.Host;

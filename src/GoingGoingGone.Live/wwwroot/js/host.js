@@ -19,6 +19,7 @@
   }
   async function newRoom() {
     const r = await conn.invoke("CreateRoom");
+    if (r.error) { $("stage").innerHTML = `<div class="center"><h2>${esc(r.error)}</h2></div>`; throw new Error(r.error); }
     room = { code: r.code, hostKey: r.hostKey };
     localStorage.setItem("ggg-host", JSON.stringify(room));
   }

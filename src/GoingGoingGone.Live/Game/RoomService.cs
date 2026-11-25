@@ -13,6 +13,23 @@ public sealed class RoomService(Catalog catalog, IHubContext<AuctionHub> hub)
 
     public IEnumerable<Room> Rooms => _rooms.Values;
 
+    public const int MaxRooms = 200, MaxRoomsPerIp = 5;
+    private readonly ConcurrentDictionary<string, List<DateTimeOffset>> _createdBy = new();
+
+    /// <summary>Null when this address has opened too many rooms recently (protects the public server).</summary>
+    public Room? TryCreate(string ip)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var log = _createdBy.GetOrAdd(ip, _ => []);
+        lock (log)
+        {
+            log.RemoveAll(t => now - t > TimeSpan.FromHours(1));
+            if (log.Count >= MaxRoomsPerIp || _rooms.Count >= MaxRooms) return null;
+            log.Add(now);
+        }
+        return Create();
+    }
+
     public Room Create()
     {
         while (true)
@@ -85,5 +102,7 @@ public sealed class RoomService(Catalog catalog, IHubContext<AuctionHub> hub)
     {
         foreach (var (code, room) in _rooms)
             if (DateTimeOffset.UtcNow - room.LastActivity > TimeSpan.FromHours(4)) _rooms.TryRemove(code, out _);
+        foreach (var (ip, log) in _createdBy)
+            lock (log) if (log.TrueForAll(t => DateTimeOffset.UtcNow - t > TimeSpan.FromHours(1))) _createdBy.TryRemove(ip, out _);
     }
 }
